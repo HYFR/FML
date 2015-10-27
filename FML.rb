@@ -18,9 +18,9 @@ class User
         String :password
       end
     end
+    $userAccount = DB[:user] # Create a global dataset of the 'user' table
   end
 
-  $account = DB[:user] # Create a dataset of the 'user' table
 
   def userInput
     puts "Do you already have an account in the user database? "
@@ -32,6 +32,13 @@ class User
       puts "And your password? "
       epassword = gets.chomp.downcase
 
+      if $userAccount[:name].select(eusername) == true
+        puts "Account exists."
+      else
+        puts "The username or password is wrong."
+      end
+      
+
     # code some lines that check if the username and password exist in the DB.
     else if answer == "no"
       puts "What will be your username? "
@@ -40,7 +47,7 @@ class User
       password = gets.chomp.downcase
 
       #Fill table with user input based on user input
-      $account.insert(:name => username, :password => password)
+      $userAccount.insert(:name => username, :password => password)
     else puts "Answer 'yes' or 'no'"
     end
 
@@ -49,7 +56,7 @@ class User
     answer = gets.chomp.downcase
 
     if answer == "yes"
-      $account.delete()
+      $userAccount.delete()
       puts "Your account was successfully deleted"
     else
       puts "Glad to have you stay with us"
@@ -68,14 +75,15 @@ class Forumn
       puts "A forumn exists. You can post content onto this forumn."
     else
       DB.create_table :forumn do
+        primary_key :post_id
+        many_to_one :user, :key=>:user_id
         foreign_key :user_id, :user
         String :title
         String :content
       end
     end
+    $dirtyLaundry = DB[:forumn] # Create a global dataset for the forumn table
   end
-
-  $dirtyLaundry = DB[:forumn] # Create a dataset for the forumn table
 
   def userInput
     puts "Would you like to create a post? "
@@ -108,3 +116,7 @@ database.userInput
 forumn = Forumn.new()
 forumn.exist
 forumn.userInput
+
+#forumn.method(database)
+
+#renamed db as currentUser
