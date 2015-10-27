@@ -7,7 +7,7 @@ class User
   end
 
   #Checks to see if a 'user' table exists in the FML database
-  def exist
+  def create
     exist = DB.table_exists?(:user)
     if exist == true
       puts "There is a table named 'user' that exists. You have access to this table."
@@ -21,7 +21,6 @@ class User
     $userAccount = DB[:user] # Create a global dataset of the 'user' table
   end
 
-
   def userInput
     puts "Do you already have an account in the user database? "
     answer = gets.chomp.downcase
@@ -32,10 +31,12 @@ class User
       puts "And your password? "
       epassword = gets.chomp.downcase
 
-      if $userAccount[:name].select(eusername) == true
+      if $userAccount.where(:name=>eusername).where(:password=>epassword).count
         puts "Account exists."
       else
         puts "The username or password is wrong."
+        puts "Please try again."
+        exit
       end
       
 
@@ -65,16 +66,16 @@ class User
 end
 end
 
-class Forumn
+class Forum
   def initialize
   end
 
-  def exist
-    forumn = DB.table_exists?(:forumn)
+  def checkOrCreate
+    forumn = DB.table_exists?(:forum)
     if forumn == true
       puts "A forumn exists. You can post content onto this forumn."
     else
-      DB.create_table :forumn do
+      DB.create_table :forum do
         primary_key :post_id
         many_to_one :user, :key=>:user_id
         foreign_key :user_id, :user
@@ -82,10 +83,10 @@ class Forumn
         String :content
       end
     end
-    $dirtyLaundry = DB[:forumn] # Create a global dataset for the forumn table
+    $currentPost = DB[:forum] # Create a global dataset for the forumn table
   end
 
-  def userInput
+  def createPost
     puts "Would you like to create a post? "
     posta = gets.chomp.downcase
 
@@ -97,26 +98,38 @@ class Forumn
       content = gets.chomp
 
       #Fill the forumn table with a title and content
-      $dirtyLaundry.insert(:title => title, :content => content)
+      $currentPost.insert(:title => title, :content => content)
+
+      puts "Would you like to delete your post?"
+      dpost = gets.chomp.downcase
+
+      if dpost == "yes"
+        puts "Deleting your post."
+        $currentPost.delete()
+      else if dpost == "no"
+        puts "Understood, we will not delete your post."
+      else
+        puts "Type either 'yes' or 'no'."
+      end
+    end
 
     else if posta == "no"
-      puts "As of now there is nothing else to do. Good day."
+      "Okay, we will not delete your post. As of now there is nothing left o do. The program will exit."
+
     else
-      puts "Please type either 'yes' or 'no'. Thank you."
-    end
+      puts "Print either 'yes' or 'no'."
   end
+end
 end
 end
   
 
-database = User.new()
-database.exist
-database.userInput
+currentUser = User.new()
+currentUser.create
+currentUser.userInput
 
-forumn = Forumn.new()
-forumn.exist
-forumn.userInput
+currentPost = Forum.new()
+currentPost.checkOrCreate
+currentPost.createPost
 
 #forumn.method(database)
-
-#renamed db as currentUser
