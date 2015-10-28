@@ -25,7 +25,7 @@ Insert username.
 What will be your password?
 ```
 Would you like to delete your account within the database?
-```
+
 Answer whatever you'd like to do. But this section demonstrates that a user may create and delete his/her account.
 ```
 Glad to have you stay with us
