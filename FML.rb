@@ -3,6 +3,12 @@ require 'sequel'
 DB = Sequel.sqlite('TheFML.db') #relative memory database
 
 class User
+  attr_reader :account_id
+
+  def userAccID
+    @account_id = DB[:user].where(:name=>euser, :password=>epassword).get(:user_id)
+  end
+  
   def initialize()
   end
 
@@ -33,6 +39,15 @@ class User
 
       if $userAccount.where(:name=>eusername).where(:password=>epassword).count
         puts "Account exists."
+
+        puts "Would you like to delete your account?"
+        danswer = gets.chomp.downcase
+
+        if danswer == "yes"
+          $userAccount.delete()
+        else
+          puts "Glad to have you stay with us."
+        end
       else
         puts "The username or password is wrong."
         puts "Please try again."
@@ -86,7 +101,7 @@ class Forum
     $currentPost = DB[:forum] # Create a global dataset for the forumn table
   end
 
-  def createPost
+  def createPost(user)
     puts "Would you like to create a post? "
     posta = gets.chomp.downcase
 
@@ -97,8 +112,10 @@ class Forum
       puts "What would you like the content of your post to be? "
       content = gets.chomp
 
+      #content_id = currentUser.userAccID
+      
       #Fill the forumn table with a title and content
-      $currentPost.insert(:title => title, :content => content)
+      #$currentPost.insert(:user_id => content_id, :title => title, :content => content)
 
       puts "Would you like to delete your post?"
       dpost = gets.chomp.downcase
@@ -130,6 +147,6 @@ currentUser.userInput
 
 currentPost = Forum.new()
 currentPost.checkOrCreate
-currentPost.createPost
+currentPost.createPost(currentUser)
 
 #forumn.method(database)
