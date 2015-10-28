@@ -1,7 +1,7 @@
 # Instructions on how to run the program
 
 ## Requirements
-Must have sqlite3 and Ruby installed.
+Must have sqlite3 and Ruby 2.1 installed.
 Open up terminal.
 To begin program, type
 ```
