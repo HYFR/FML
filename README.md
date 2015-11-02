@@ -1,4 +1,4 @@
-# Instructions on how to run the program
+# Instructions to run the database code.
 
 ## Requirements
 Must have sqlite3 and Ruby 2.1 installed.
@@ -40,3 +40,12 @@ Would you like to delete your post?
 And demonstrates that a user can delete his/her post once created.
 
 The program is simple, yet allows for the creation of an account and post, as well as the ability to delete the account and post.
+
+## Unit Tests
+Same requirements as above.
+To begin unit tests, type
+```
+ruby unitTests.rb
+```
+into the terminal.
+You will be brought into text interaction with the terminal, so just play along until text stops appearing. As soon as the prompts stop the unit test results will appear on the screen. :star2: :star2: :star2:
