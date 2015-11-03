@@ -41,6 +41,24 @@ And demonstrates that a user can delete his/her post once created.
 
 The program is simple, yet allows for the creation of an account and post, as well as the ability to delete the account and post.
 
+## sqlite3 Database
+To verify that all the user input was successfully stored in the database, type
+```
+sqlite3 TheFML.db
+```
+into the terminal.
+
+To check the users in the database, type
+```
+select * from user;
+```
+into the terminal, and the users in the database will be displayed on the terminal.
+To check the posts in the database, type
+```
+select * from forum;
+```
+into the terminal, and the posts will be displayed on the terminal.
+
 ## Unit Tests
 Same requirements as above.
 To begin unit tests, type
