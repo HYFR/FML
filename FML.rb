@@ -3,12 +3,17 @@ require 'sequel'
 DB = Sequel.sqlite('TheFML.db') #relative memory database
 
 class User
+  attr_reader :userDataset
 
+  def initialize
+    @userDataset = userDataset
+  end
+  
   #Checks to see if a 'user' table exists in the FML database
   def verifyDB
     exist = DB.table_exists?(:user)
     if exist == true
-      puts "There is a table named 'user' that exists. You have access to this table."
+      puts "User table exists"
     else #Create a user table in the database
       DB.create_table :user do
         primary_key :user_id
@@ -16,7 +21,18 @@ class User
         String :password
       end
     end
-    @@userAccount = DB[:user] # Creates a class variable dataset of the 'user' table.
+    @userDataset = DB[:user] # Creates a class variable dataset of the 'user' table.
+  end
+
+  def userID
+    puts "What is your username?"
+    @username = gets.chomp.downcase
+
+    puts "What is your password?"
+    @password = gets.chomp.downcase
+
+    @userID = @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
+    return @userID
   end
 
   def verifyAccount
@@ -25,38 +41,21 @@ class User
 
     if answer == "yes"
       puts "That is great. What is your username? "
-      @@eusername = gets.chomp.downcase
+      @eusername = gets.chomp.downcase
       puts "And your password? "
-      @@epassword = gets.chomp.downcase 
+      @epassword = gets.chomp.downcase 
 
       # user input gets stored into a class instance variable and stored into DB
-      if @@userAccount.where(:name=>@@eusername).where(:password=>@@epassword).count > 0
+      if @userDataset.where(:name=>@eusername).where(:password=>@epassword).count > 0
         puts "Account exists."
-        @@userID = @@userAccount.where(:name => @@eusername).where(:password => @@epassword).get(:user_id)
-
-        puts "Would you like to delete your account?"
-        danswer = gets.chomp.downcase
-
-        puts "What is your username?"
-        dusername = gets.chomp
-
-        if danswer == "yes"
-          @@userAccount.where(:name => dusername).delete()
-          puts "Your account was deleted."
-        elsif danswer == "no"
-          puts "Glad to have you stay with us."
-        else
-          puts "Type in either 'yes' or 'no.'"
-        end
-      else
-        puts "The username or password is wrong."
-        puts "Please try again."
-      end
+        @userID = @userDataset.where(:name => @eusername).where(:password => @epassword).get(:user_id)
     elsif answer == "no"
       puts "You should consider joining."
     else
       puts "Type either 'yes' or 'no'."
+      end
     end
+    return @userID
   end
 
   def tryAgain
@@ -69,7 +68,7 @@ class User
       @password = gets.chomp.downcase
 
       # The .count method returns a number and if the number is > 0, the int signifies the number of accounts that exist with the specific @username and @password. if int returned from .count > 0 then an account exists.
-      if @@userAccount.where(:name => @username).where(:password => @password).count > 0
+      if @userAccount.where(:name => @username).where(:password => @password).count > 0
         puts "Glad to have you with us."
         i = 3
       else
@@ -80,21 +79,13 @@ class User
   end
   
   def createUser
-    puts "Since you do not have an account with us, would like to create an account?"
-    answer = gets.chomp.downcase
-    if answer == "yes"
-      puts "What will be your username?"
-      @@eusername = gets.chomp.downcase
-      puts "What will be your password?"
-      @@epassword = gets.chomp.downcase
+    puts "What will be your username?"
+    @eusername = gets.chomp.downcase
+    puts "What will be your password?"
+    @epassword = gets.chomp.downcase
 
-      @@userAccount.insert(:name => @@eusername, :password => @@epassword)
-
-    elsif answer == "no"
-      puts "That's too bad. We'd like to have you join us."
-    else
-      puts "Type either 'yes' or no."
-    end
+    @userDataset.insert(:name => @eusername, :password => @epassword)
+    puts "\nThank you for joining us #{@eusername}.\n "
   end
 
   def delAccount
@@ -102,7 +93,7 @@ class User
     answer = gets.chomp.downcase
 
     if answer == "yes"
-      @@userAccount.where(:name => @@eusername).where(:password => @@epassword).delete()
+      @userAccount.where(:name => @eusername).where(:password => @epassword).delete()
       puts "Your account was successfully deleted"
     elsif answer == "no"
       puts "Glad to have you stay with us"
@@ -112,8 +103,12 @@ class User
   end
 end
 
-class Post < User
-
+class Post
+  
+  def initialize
+    @user = User.new()
+  end
+  
   def checkPostTable
     forumn = DB.table_exists?(:forum)
     if forumn == true
@@ -126,31 +121,22 @@ class Post < User
         String :content
       end
     end
-    @@currentPost = DB[:forum] # Creates a class variable from the forum table that holds a Post dataset.
+    @currentPost = DB[:forum] # create a instance variable of the dataset 'forum'
   end
 
-  def createPost(accountID)
-    puts "Would you like to create a post? "
-    answer = gets.chomp.downcase
+  def createPost()
+    puts "What would you like the title of your post to be? "
+    @title = gets.chomp
 
-    if answer == "yes"
-      puts "What would you like the title of your post to be? "
-      @@title = gets.chomp
-
-      puts "What would you like the content of your post to be? "
-      @@content = gets.chomp
+    puts "What would you like the content of your post to be? "
+    @content = gets.chomp
       
-      #Fill the forumn table with a title and content
-      @@currentPost.insert(:user_id => @@userID, :title => @@title, :content => @@content)
-    elsif answer == "no"
-      puts "You should consider joining us."
-    else
-      puts "Type either 'yes' or 'no'."
-    end
+    #Fill the forumn table with a title and content
+    @currentPost.insert(:user_id => @user.userID, :title => @title, :content => @content)
   end
 
   def delPost
-    puts "#{@@currentPost.where(:user_id => @@userID).all}"
+    puts "#{@currentPost.where(:user_id => @userID).all}"
     puts "Your account's posts have been displayed. Type the Title of the post you want to delete."
     title = gets.chomp
 
@@ -159,7 +145,7 @@ class Post < User
 
     if deletion == "yes"
       puts "Deleting your post."
-      @@currentPost.where(:title => title).delete()
+      @currentPost.where(:title => title).delete()
     elsif deletion == "no"
       puts "Understood, we will not delete your post."
     else
@@ -168,16 +154,38 @@ class Post < User
   end
 end
 
-# Create an instance of User class and verify that every method works.
-currentUser = User.new()
-currentUser.verifyDB
-currentUser.verifyAccount
-currentUser.createUser
-currentUser.tryAgain
-currentUser.delAccount
+class Menu
+  def initialize
+    @user = User.new
+    @post = Post.new
+  end
+  
+  def options()
+    puts "Welcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create user', 'create post', 'delete user', 'delete post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun."
+    @user.verifyDB()
+    @post.checkPostTable()
+    puts "What would you like to do?"
+    keyword = gets.chomp.downcase
+    if keyword ==  "create user"
+      @user.createUser()
+      options()
+    elsif keyword == "create post"
+      @post.createPost()
+      options()
+    elsif keyword == "delete user"
+      @user.delAccount
+      options()
+    elsif keyword == "delete post"
+      @post.delPost
+      options()
+    elsif keyword == "exit"
+      abort("Exiting the DL forum. Thank you for coming")
+    else
+      puts "\nType in one of the keywords: 'create user', 'create post', 'delete user', 'delete post', or 'exit \n'"
+      options()
+    end
+  end
+end
 
-# Create an isntance of Post class and verify that every method works
-currentPost = Post.new()
-currentPost.checkPostTable
-currentPost.createPost(currentUser.verifyAccount) 
-currentPost.delPost
+menu = Menu.new()
+menu.options()
