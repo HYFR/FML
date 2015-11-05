@@ -3,11 +3,6 @@ require 'sequel'
 DB = Sequel.sqlite('TheFML.db') #relative memory database
 
 class User
-  attr_reader :userDataset
-
-  def initialize
-    @userDataset = userDataset
-  end
   
   #Checks to see if a 'user' table exists in the FML database
   def verifyDB
@@ -107,6 +102,7 @@ class Post
   
   def initialize
     @user = User.new()
+    @verify = @user.verifyDB()
   end
   
   def checkPostTable
@@ -133,24 +129,16 @@ class Post
       
     #Fill the forumn table with a title and content
     @currentPost.insert(:user_id => @user.userID, :title => @title, :content => @content)
+    puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
 
-  def delPost
-    puts "#{@currentPost.where(:user_id => @userID).all}"
+  def delPost()
+    puts "#{@currentPost.where(:user_id => @user.userID).all}"
     puts "Your account's posts have been displayed. Type the Title of the post you want to delete."
     title = gets.chomp
 
-    puts "LAST WARNING: Would you like to delete this post?"
-    deletion = gets.chomp.downcase
-
-    if deletion == "yes"
-      puts "Deleting your post."
-      @currentPost.where(:title => title).delete()
-    elsif deletion == "no"
-      puts "Understood, we will not delete your post."
-    else
-      puts "Type in either 'yes' or 'no'."
-    end
+    @currentPost.where(:title => title).delete()
+    puts "\nThe post, titled  '#{title}' has been delted.\n "
   end
 end
 
@@ -158,12 +146,12 @@ class Menu
   def initialize
     @user = User.new
     @post = Post.new
+    @user.verifyDB()
+    @post.checkPostTable()
   end
   
   def options()
     puts "Welcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create user', 'create post', 'delete user', 'delete post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun."
-    @user.verifyDB()
-    @post.checkPostTable()
     puts "What would you like to do?"
     keyword = gets.chomp.downcase
     if keyword ==  "create user"
