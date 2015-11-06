@@ -3,12 +3,14 @@ require 'sequel'
 DB = Sequel.sqlite('TheFML.db') #relative memory database
 
 class User
+  def initialize
+    @userDataset = DB[:user]
+  end
   
   #Checks to see if a 'user' table exists in the FML database
   def verifyDB
     exist = DB.table_exists?(:user)
     if exist == true
-      puts "User table exists"
     else #Create a user table in the database
       DB.create_table :user do
         primary_key :user_id
@@ -26,8 +28,8 @@ class User
     puts "What is your password?"
     @password = gets.chomp.downcase
 
-    @userID = @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
-    return @userID
+    @accountID = @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
+    return @accountID
   end
 
   def verifyAccount
@@ -63,7 +65,7 @@ class User
       @password = gets.chomp.downcase
 
       # The .count method returns a number and if the number is > 0, the int signifies the number of accounts that exist with the specific @username and @password. if int returned from .count > 0 then an account exists.
-      if @userAccount.where(:name => @username).where(:password => @password).count > 0
+      if @userDataset.where(:name => @username).where(:password => @password).count > 0
         puts "Glad to have you with us."
         i = 3
       else
@@ -80,21 +82,17 @@ class User
     @epassword = gets.chomp.downcase
 
     @userDataset.insert(:name => @eusername, :password => @epassword)
-    puts "\nThank you for joining us #{@eusername}.\n "
+    puts "\nThank you for joining us, '#{@eusername}'.\n "
   end
 
   def delAccount
-    puts "Would you like to delete your account within the user database? "
-    answer = gets.chomp.downcase
-
-    if answer == "yes"
-      @userAccount.where(:name => @eusername).where(:password => @epassword).delete()
-      puts "Your account was successfully deleted"
-    elsif answer == "no"
-      puts "Glad to have you stay with us"
-    else
-      puts "Type either 'yes' or 'no'."
-    end
+    puts "What is your username?"
+    @username = gets.chomp.downcase
+    puts "What is your password?"
+    @password = gets.chomp.downcase
+    
+    @userDataset.where(:name => @username).where(:password => @password).delete()
+    puts "Your account, '#{@username}', was successfully deleted"
   end
 end
 
@@ -108,7 +106,6 @@ class Post
   def checkPostTable
     forumn = DB.table_exists?(:forum)
     if forumn == true
-      puts "A forumn exists. You can post content onto this forumn."
     else
       DB.create_table :forum do
         primary_key :post_id
@@ -121,14 +118,14 @@ class Post
   end
 
   def createPost()
+    @ID = @user.userID
+    
+    #Fill the forumn table with a title and content
     puts "What would you like the title of your post to be? "
     @title = gets.chomp
-
     puts "What would you like the content of your post to be? "
     @content = gets.chomp
-      
-    #Fill the forumn table with a title and content
-    @currentPost.insert(:user_id => @user.userID, :title => @title, :content => @content)
+    @currentPost.insert(:user_id => @ID, :title => @title, :content => @content)
     puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
 
@@ -139,6 +136,11 @@ class Post
 
     @currentPost.where(:title => title).delete()
     puts "\nThe post, titled  '#{title}' has been delted.\n "
+  end
+
+  def showPost()
+    puts "#{@currentPost.where(:user_id => @user.userID).all}"
+    puts "\nThese are your posts."
   end
 end
 
@@ -151,7 +153,7 @@ class Menu
   end
   
   def options()
-    puts "Welcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create user', 'create post', 'delete user', 'delete post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun."
+    puts "\nWelcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create user', 'create post', 'delete user', 'delete post', 'show post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n*There is one thing to keep in mind though. If you want to delete your user account, you first have to delete any posts associated with the account.\n "
     puts "What would you like to do?"
     keyword = gets.chomp.downcase
     if keyword ==  "create user"
@@ -165,6 +167,9 @@ class Menu
       options()
     elsif keyword == "delete post"
       @post.delPost
+      options()
+    elsif keyword == "show post"
+      @post.showPost()
       options()
     elsif keyword == "exit"
       abort("Exiting the DL forum. Thank you for coming")
