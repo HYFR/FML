@@ -21,48 +21,30 @@ class User
     @userDataset = DB[:user] # Creates a class variable dataset of the 'user' table.
   end
 
-  def userID
+  def username
     puts "What is your username?"
     @username = gets.chomp.downcase
+  end
 
+  def password
     puts "What is your password?"
     @password = gets.chomp.downcase
+  end
 
+  def accountID
+    @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
+  end
+
+  def userID
     @accountID = @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
-    return @accountID
   end
 
-  def verifyAccount
-    puts "Do you already have an account in the user database? "
-    answer = gets.chomp.downcase
-
-    if answer == "yes"
-      puts "That is great. What is your username? "
-      @eusername = gets.chomp.downcase
-      puts "And your password? "
-      @epassword = gets.chomp.downcase 
-
-      # user input gets stored into a class instance variable and stored into DB
-      if @userDataset.where(:name=>@eusername).where(:password=>@epassword).count > 0
-        puts "Account exists."
-        @userID = @userDataset.where(:name => @eusername).where(:password => @epassword).get(:user_id)
-    elsif answer == "no"
-      puts "You should consider joining."
-    else
-      puts "Type either 'yes' or 'no'."
-      end
-    end
-    return @userID
-  end
-
-  def tryAgain
+  def logIN
     i = 0
     puts "You will be temporary kicked off if your password or username is incorrect three times."
     while i < 3 do
-      puts "What is your username?"
-      @username = gets.chomp.downcase
-      puts "What is your password?"
-      @password = gets.chomp.downcase
+      @username = username()
+      @password = password()
 
       # The .count method returns a number and if the number is > 0, the int signifies the number of accounts that exist with the specific @username and @password. if int returned from .count > 0 then an account exists.
       if @userDataset.where(:name => @username).where(:password => @password).count > 0
@@ -76,20 +58,19 @@ class User
   end
   
   def createUser
-    puts "What will be your username?"
-    @eusername = gets.chomp.downcase
-    puts "What will be your password?"
-    @epassword = gets.chomp.downcase
+    if userID()
+    else
+      @eusername = username()
+      @epassword = password()
 
-    @userDataset.insert(:name => @eusername, :password => @epassword)
-    puts "\nThank you for joining us, '#{@eusername}'.\n "
+      @userDataset.insert(:name => @eusername, :password => @epassword)
+      puts "\nThank you for joining us, '#{@eusername}'.\n "
+    end
   end
 
   def delAccount
-    puts "What is your username?"
-    @username = gets.chomp.downcase
-    puts "What is your password?"
-    @password = gets.chomp.downcase
+    @username = username()
+    @password = password()
     
     @userDataset.where(:name => @username).where(:password => @password).delete()
     puts "Your account, '#{@username}', was successfully deleted"
@@ -139,8 +120,8 @@ class Post
   end
 
   def showPost()
-    puts "#{@currentPost.where(:user_id => @user.userID).all}"
-    puts "\nThese are your posts."
+    puts "#{@currentPost.all}"
+    puts "\nThis is the post wall. It is a little messy at the moment but it will be cleanded up soon."
   end
 end
 
@@ -158,25 +139,20 @@ class Menu
     keyword = gets.chomp.downcase
     if keyword ==  "create user"
       @user.createUser()
-      options()
     elsif keyword == "create post"
       @post.createPost()
-      options()
     elsif keyword == "delete user"
       @user.delAccount
-      options()
     elsif keyword == "delete post"
       @post.delPost
-      options()
     elsif keyword == "show post"
       @post.showPost()
-      options()
     elsif keyword == "exit"
       abort("Exiting the DL forum. Thank you for coming")
     else
       puts "\nType in one of the keywords: 'create user', 'create post', 'delete user', 'delete post', or 'exit \n'"
-      options()
     end
+    options()
   end
 end
 
