@@ -31,12 +31,9 @@ class User
     @password = gets.chomp.downcase
   end
 
-  def accountID
-    @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
-  end
-
-  def userID
+  def accountID()
     @accountID = @userDataset.where(:name => @username).where(:password => @password).get(:user_id)
+    return @accountID
   end
 
   def logIN
@@ -46,10 +43,10 @@ class User
       @username = username()
       @password = password()
 
-      # The .count method returns a number and if the number is > 0, the int signifies the number of accounts that exist with the specific @username and @password. if int returned from .count > 0 then an account exists.
-      if @userDataset.where(:name => @username).where(:password => @password).count > 0
-        puts "Glad to have you with us."
+      if accountID() > 0
+        puts "\nGlad to have you return, #{@username}. "
         i = 3
+        return true
       else
         puts "Username or password is wrong."
         i += 1
@@ -79,11 +76,6 @@ end
 
 class Post
   
-  def initialize
-    @user = User.new()
-    @verify = @user.verifyDB()
-  end
-  
   def checkPostTable
     forumn = DB.table_exists?(:forum)
     if forumn == true
@@ -98,15 +90,14 @@ class Post
     @currentPost = DB[:forum] # create a instance variable of the dataset 'forum'
   end
 
-  def createPost()
-    @ID = @user.userID
+  def createPost(id)
     
     #Fill the forumn table with a title and content
     puts "What would you like the title of your post to be? "
     @title = gets.chomp
     puts "What would you like the content of your post to be? "
     @content = gets.chomp
-    @currentPost.insert(:user_id => @ID, :title => @title, :content => @content)
+    @currentPost.insert(:user_id => id, :title => @title, :content => @content)
     puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
 
@@ -132,15 +123,28 @@ class Menu
     @user.verifyDB()
     @post.checkPostTable()
   end
+
+  def intro()
+    puts "Welcome to the forumn. Would you like to log in or create an account? Keywords are 'log in' or 'create'"
+    answer = gets.chomp.downcase
+
+    if answer == "log in"
+      if @user.logIN()
+        options()
+      end
+    elsif answer == "create"
+      @user.createUser()
+      options()
+    end
+  end
+      
   
   def options()
-    puts "\nWelcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create user', 'create post', 'delete user', 'delete post', 'show post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n*There is one thing to keep in mind though. If you want to delete your user account, you first have to delete any posts associated with the account.\n "
+    puts "\nWelcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create post', 'delete user', 'delete post', 'show post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n*There is one thing to keep in mind though. If you want to delete your user account, you first have to delete any posts associated with the account.\n "
     puts "What would you like to do?"
     keyword = gets.chomp.downcase
-    if keyword ==  "create user"
-      @user.createUser()
-    elsif keyword == "create post"
-      @post.createPost()
+    if keyword == "create post"
+      @post.createPost(@user.accountID)
     elsif keyword == "delete user"
       @user.delAccount
     elsif keyword == "delete post"
@@ -150,11 +154,11 @@ class Menu
     elsif keyword == "exit"
       abort("Exiting the DL forum. Thank you for coming")
     else
-      puts "\nType in one of the keywords: 'create user', 'create post', 'delete user', 'delete post', or 'exit \n'"
+      puts "\nType in one of the keywords: 'create post', 'delete user', 'delete post', or 'exit \n'"
     end
     options()
   end
 end
 
 menu = Menu.new()
-menu.options()
+menu.intro()
