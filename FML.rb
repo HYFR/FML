@@ -108,7 +108,8 @@ class Post
   end
 
   def showPost()
-    puts "#{@currentPost.all}"
+    posts = @currentPost.to_hash(:title, :content)
+    puts "#{posts}"
     puts "\nThis is the post wall. It is a little messy at the moment but it will be cleanded up soon."
   end
 end
