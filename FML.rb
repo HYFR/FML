@@ -55,14 +55,11 @@ class User
   end
   
   def createUser
-    if userID()
-    else
-      @eusername = username()
-      @epassword = password()
+    @eusername = username()
+    @epassword = password()
 
-      @userDataset.insert(:name => @eusername, :password => @epassword)
-      puts "\nThank you for joining us, '#{@eusername}'.\n "
-    end
+    @userDataset.insert(:name => @eusername, :password => @epassword)
+    puts "\nThank you for joining us, '#{@eusername}'.\n "
   end
 
   def delAccount
