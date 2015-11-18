@@ -37,9 +37,9 @@ class User
   end
   
   #We see the use of username and password come into use here. The values identify which account is deleted.
-  def delAccount()
-    delete()
-    puts "Your account, '#{@eusername}', was successfully deleted"
+  def delAccount(username, password)
+    delete(username, password)
+    puts "Your account, '#{username}', was successfully deleted"
     abort("We are sorry to see you go.")
     
   end
@@ -173,7 +173,7 @@ class Menu
     if keyword == "create post"
       @post.createPost(@user.accountID(@username, @password))
     elsif keyword == "delete user"
-      @user.delAccount
+      @user.delAccount(@username, @password)
     elsif keyword == "delete post"
       @post.delPost(@user.accountID(@username, @password))
     elsif keyword == "show post"
