@@ -56,6 +56,7 @@ class Post
         foreign_key :user_id, :user
         String :title
         String :content
+        String :category
       end
     end
     @currentPost = DB[:forum] # create a instance variable of the dataset 'forum'
@@ -63,7 +64,7 @@ class Post
 
   #An important function in createPost, and is the separate database interaction.
   def insertContent(id)
-    @currentPost.insert(:user_id => id, :title => @title, :content => @content)
+    @currentPost.insert(:user_id => id, :title => @title, :content => @content, :category => @category)
   end
 
   #Creates the title for createPost(id) function
@@ -77,11 +78,33 @@ class Post
     puts "What would you like the content of your post to be? "
     @content = gets.chomp
   end
-  
+
+  def category
+    puts "In what category would you like your post to be? Love, Money, Work, Animals, Kids, Health"
+    @category = gets.chomp.downcase
+    if @category == "love"
+      @category
+    elsif @category == "money"
+      @category
+    elsif @category == "work"
+      @category
+    elsif @category == "animals"
+      @category
+    elsif @category == "kids"
+      @category
+    elsif @category == "health"
+      @category
+    else
+      puts "Category should be one of 'Love', 'Money', 'Work', 'Animals', 'Kids', or 'Health.'"
+      category()
+    end
+  end
+    
   def createPost(id)
     #Fill the forumn table with a title and content
     title()
     content()
+    category()
     insertContent(id)
     puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
@@ -170,7 +193,7 @@ class Menu
   end
   
   def options()
-    puts "\nWelcome to the DL forum. Here you can create a user account, create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create post', 'delete user', 'delete post', 'show post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n*There is one thing to keep in mind though. If you want to delete your user account, you first have to delete any posts associated with the account.\n "
+    puts "\nWelcome to the DL forum. Here you can create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create post', 'delete user', 'delete post', 'show post', and 'exit'. Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n*There is one thing to keep in mind though. If you want to delete your user account, you first have to delete any posts associated with the account.\n "
     puts "What would you like to do?"
     keyword = gets.chomp.downcase
     if keyword == "create post"
