@@ -164,6 +164,9 @@ class Menu
       createUser()
       options()
     end
+  else
+    puts "Type either 'log in' or 'create'"
+    intro()
   end
   
   def options()
