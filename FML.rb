@@ -163,10 +163,10 @@ class Menu
     elsif @answer == "create"
       createUser()
       options()
+    else
+      puts "Type either 'log in' or 'create'\n"
+      intro()
     end
-  else
-    puts "Type either 'log in' or 'create'"
-    intro()
   end
   
   def options()
