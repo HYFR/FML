@@ -80,7 +80,7 @@ class Post
   end
 
   def category
-    puts "In what category would you like your post to be? Love, Money, Work, Animals, Kids, Health"
+    puts "In what category would you like your post to be? Love, Money, Work, Health, Misc."
     @category = gets.chomp.downcase
     if @category == "love"
       @category
@@ -88,9 +88,7 @@ class Post
       @category
     elsif @category == "work"
       @category
-    elsif @category == "animals"
-      @category
-    elsif @category == "kids"
+    elsif @category == "misc"
       @category
     elsif @category == "health"
       @category
@@ -127,10 +125,35 @@ class Post
     @currentPost.to_hash(:title, :content)
   end
 
+  def categoryPost(category)
+    @currentPost.where(:category => category).to_hash(:title, :content)
+  end
+
   def showPost()
-    posts = post()
-    puts "#{posts}"
-    puts "\nThis is the post wall. It is a little messy at the moment but it will be cleanded up soon."
+    puts "What category of posts would you like to see? Love, Money, Work, Misc., Health, or All?"
+    @category = gets.chomp.downcase
+    if @category ==  "all"
+      posts = post()
+      puts "#{posts}"
+    elsif @category == "love"
+      love = categoryPost(@category)
+      puts "#{love}"
+    elsif @category == "money"
+      money = categoryPost(@category)
+      puts "#{money}"
+    elsif @category == "work"
+      work = categoryPost(@category)
+      puts "#{work}"
+    elsif @category == "misc"
+      misc = categoryPost(@category)
+      puts "#{misc}"
+    elsif @category == "health"
+      health = categoryPost(@category)
+      puts "{health}"
+    else
+      puts "Type one of the categories: Love, Money, Work, Misc., Health, or All"
+      showPost()
+    end
   end
 end
 
