@@ -30,16 +30,18 @@ class Post
     @title = gets.chomp
   end
 
-  #Creates content for createPost(id) function
+  #Creates content for createPost(id) function, used in createPost function
   def content
     puts "What would you like the content of your post to be? "
     @content = gets.chomp
   end
 
+  #Displays post titles that belongs to logged in user
   def postID(title)
     @postID = @currentPost.where(:title => title).get(:post_id)
   end
 
+  #Holds category for post attribute, used in createPost function
   def category
     puts "In what category would you like your post to be? Love, Money, Work, Health, Misc."
     @category = gets.chomp.downcase
@@ -58,7 +60,8 @@ class Post
       category()
     end
   end
-    
+
+  #Creates post, used in options function in Menu.rb
   def createPost(id)
     #Fill the forumn table with a title and content
     title()
@@ -68,11 +71,12 @@ class Post
     puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
   
-  #delTitle is required for delPost(id) to work. It helps separate the database interaction from user input.
+  #Used to delete title from existing post. Used in delPost function
   def delTitle
     @currentPost.where(:title => @title).delete()
   end
 
+  #Called from options function in Menu.rb
   def delPost(id)
     puts "#{@currentPost.where(:user_id => id).to_hash(:title, :content)}"
     puts "Your account's posts have been displayed. Type the Title of the post you want to delete."
@@ -86,6 +90,7 @@ class Post
     @currentPost.to_hash(:title, :content)
   end
 
+  #Displays posts in a specific category. 
   def categoryPost(category)
     @currentPost.where(:category => category).to_hash(:title, :content)
   end

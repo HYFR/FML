@@ -16,6 +16,7 @@ class Comment < Post
     @currentComment = DB[:comments]
   end
 
+  #Used in adCommentOrSeeComment function in Menu.rb
   def insertComment(post, comment)
     @currentComment.insert(:post_id => post, :content => comment)
   end
