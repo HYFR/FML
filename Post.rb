@@ -36,9 +36,14 @@ class Post
     @content = gets.chomp
   end
 
-  #Displays post titles that belongs to logged in user
+  #Used in Menu.rb's function addCommentOrSeeComment
   def postID(title)
     @postID = @currentPost.where(:title => title).get(:post_id)
+  end
+  
+  #Used in Menu.rb's function addCommentOrSeeComment
+  def postTitle(title)
+    @postTitle = @currentPost.where(:title => title)
   end
 
   #Holds category for post attribute, used in createPost function

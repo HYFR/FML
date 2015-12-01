@@ -32,7 +32,7 @@ class Menu
     end
   end
 
-  def createUser
+  def createUser()
     @user.insert(username, password)
     puts "\nThank you for joining us, #{@username}.\n "
   end
@@ -41,9 +41,10 @@ class Menu
     puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'"
     @content = gets.chomp.downcase
     if @content == "comment"
-      @comment.insertComment(@post.postID(titleComment()), comment)
+      titleComment()
+      @comment.insertComment(@post.postID(@commentTitle), @user.accountID(@username, @password) , @commentTitle, comment)
     elsif @content == "see"
-      #enter function that displays comments
+      @comment.showComment()
     else
       puts "Type either 'comment' or 'see.'"
       addCommentOrSeeComment()
@@ -52,7 +53,7 @@ class Menu
 
   def titleComment()
     puts "What post would you like to comment on? Type the title."
-    @title = gets.chomp
+    @commentTitle = gets.chomp
   end
   
    def comment()

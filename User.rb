@@ -36,6 +36,7 @@ class User
   def delAccount(username, password)
     delete(username, password)
     puts "Your account, '#{username}', was successfully deleted"
-    abort("We are sorry to see you go.")
+    puts "We are sorry to see you go."
+    exit
   end
 end
