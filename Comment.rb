@@ -9,7 +9,7 @@ class Comment < Post
     else
       DB.create_table :comments do
         primary_key :commentNumber
-        foreign_key :post_id, :forum
+        foreign_key :user_id, :forum
         String :content
       end
     end
@@ -18,6 +18,10 @@ class Comment < Post
 
   #Used in adCommentOrSeeComment function in Menu.rb
   def insertComment(post, comment)
-    @currentComment.insert(:post_id => post, :content => comment)
+    @currentComment.insert(:user_id => post, :content => comment)
+  end
+
+  def delUsrComment(id)
+    @currentComment.where(:user_id => id).delete()
   end
 end

@@ -76,6 +76,10 @@ class Post
     @currentPost.where(:title => @title).delete()
   end
 
+  def delUsrPost(id)
+    @currentPost.where(:user_id => id).delete()
+  end
+
   #Called from options function in Menu.rb
   def delPost(id)
     puts "#{@currentPost.where(:user_id => id).to_hash(:title, :content)}"

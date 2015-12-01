@@ -46,7 +46,7 @@ class Menu
       #enter function that displays comments
     else
       puts "Type either 'comment' or 'see.'"
-      addComment()
+      addCommentOrSeeComment()
     end
   end
 
@@ -84,6 +84,8 @@ class Menu
     if keyword == "create post"
       @post.createPost(@user.accountID(@username, @password))
     elsif keyword == "delete user"
+      @comment.delUsrComment(@user.accountID(@username, @password))
+      @post.delUsrPost(@user.accountID(@username, @password))
       @user.delAccount(@username, @password)
     elsif keyword == "delete post"
       @post.delPost(@user.accountID(@username, @password))
