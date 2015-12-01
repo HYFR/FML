@@ -12,3 +12,10 @@ Type
 ruby FML.rb
 ```
 on the command line. This will initiate the program. Once the program starts a menu will help guide the user through the features in the program.
+
+## Testing
+Type
+```
+ruby unitTests.rb
+```
+on the command line to initiate the unit tests.
