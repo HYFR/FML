@@ -62,7 +62,7 @@ class Menu
 
    #Menu to log in or create account
   def intro()
-    puts "\tWelcome to the forumn. Would you like to log in or create an account? Keywords are 'log in' or 'create'.\n"
+    puts "\tWelcome to the forumn. Would you like to log in or create an account? Keywords are 'log in' or 'create' or 'exit'.\n"
     @answer = gets.chomp.downcase
     if @answer == "log in"
       if logIN()
@@ -71,6 +71,9 @@ class Menu
     elsif @answer == "create"
       createUser()
       options()
+    elsif @answer == "exit"
+      puts "Later"
+      exit
     else
       puts "Type either 'log in' or 'create'\n"
       intro()
@@ -93,7 +96,8 @@ class Menu
       @post.showPost()
       addCommentOrSeeComment()
     elsif keyword == "log out"
-      abort("Exiting the DL forum. Thank you for coming")
+      puts "Logging out, #{@username}."
+      intro()
     else
       puts "\nType in one of the keywords: 'create post', 'show post', 'delete user', 'delete post', or 'log out\n'"
     end
