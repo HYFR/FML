@@ -8,7 +8,6 @@ class Menu
     @db = db
     @user = User.new(@db)
     @post = Post.new(@db)
-    @comment = Comment.new(@db)
   end
                    
   def username
@@ -41,32 +40,9 @@ class Menu
 
   def createUser()
     @user.insert(username, password)
+
     puts "\nThank you for joining us, #{@username}.\n "
   end
-  
-  def addCommentOrSeeComment()
-    puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'"
-    @content = gets.chomp.downcase
-    if @content == "comment"
-      titleComment()
-      @comment.insertComment(@post.postID(@commentTitle), @user.accountID(@username, @password) , @commentTitle, comment)
-    elsif @content == "see"
-      @comment.showComment()
-    else
-      puts "Type either 'comment' or 'see.'"
-      addCommentOrSeeComment()
-    end
-  end
-
-  def titleComment()
-    puts "What post would you like to comment on? Type the title."
-    @commentTitle = gets.chomp
-  end
-  
-   def comment()
-    puts "What would you like to comment?"
-    @content = gets.chomp
-   end
 
    #Menu to log in or create account
   def intro()
@@ -101,8 +77,7 @@ class Menu
     elsif keyword == "delete post"
       @post.delPost(@user.accountID(@username, @password))
     elsif keyword == "show post"
-      @post.showPost()
-      addCommentOrSeeComment()
+      @post.showPost(@user.accountID(@username, @password))
     elsif keyword == "log out"
       puts "Logging out, #{@username}.\n"
       intro()

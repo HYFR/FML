@@ -3,6 +3,7 @@ class Post
   def initialize(db)
     @db = db
     checkPostTable()
+    @comment = Comment.new(@db)
   end
   
   def checkPostTable
@@ -117,8 +118,8 @@ class Post
   def categoryPost(category)
     @currentPost.where(:category => category).to_hash(:title, :content)
   end
-    
-  def showPost()
+  
+  def showPost(id)
     puts "What category of posts would you like to see? Love, Money, Work, Misc., Health, or All?\n"
     @category = gets.chomp.downcase
     if @category ==  "all"
@@ -149,5 +150,30 @@ class Post
       puts "Type one of the categories: Love, Money, Work, Misc., Health, or All"
       showPost()
     end
+    addCommentOrSeeComment(id)
   end
+
+  def addCommentOrSeeComment(id)
+    puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'"
+    @content = gets.chomp.downcase
+    if @content == "comment"
+      titleComment()
+      @comment.insertComment(postID(@commentTitle), id , @commentTitle, comment)
+    elsif @content == "see"
+      @comment.showComment()
+    else
+      puts "Type either 'comment' or 'see.'"
+      addCommentOrSeeComment(id)
+    end
+  end
+
+  def titleComment()
+    puts "What post would you like to comment on? Type the title."
+    @commentTitle = gets.chomp
+  end
+  
+   def comment()
+    puts "What would you like to comment?"
+    @content = gets.chomp
+   end
 end
