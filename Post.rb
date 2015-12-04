@@ -1,14 +1,15 @@
 class Post
 
-  def initialize
+  def initialize(db)
+    @db = db
     checkPostTable()
   end
   
   def checkPostTable
-    forumn = DB.table_exists?(:forum)
+    forumn = @db.table_exists?(:forum)
     if forumn == true
     else
-      DB.create_table :forum do
+      @db.create_table :forum do
         primary_key :post_id
         foreign_key :user_id, :user
         String :title
@@ -16,7 +17,7 @@ class Post
         String :category
       end
     end
-    @currentPost = DB[:forum] # create a instance variable of the dataset 'forum'
+    @currentPost = @db[:forum] # create a instance variable of the dataset 'forum'
   end
 
   #An important function in createPost, and is the separate database interaction.
@@ -30,10 +31,18 @@ class Post
     @title = gets.chomp
   end
 
+  def actualTitle(title)
+    @actualTitle = title
+  end
+
   #Creates content for createPost(id) function, used in createPost function
   def content
     puts "What would you like the content of your post to be? "
     @content = gets.chomp
+  end
+
+  def actualContent(content)
+    @actualContent = content
   end
 
   #Used in Menu.rb's function addCommentOrSeeComment
@@ -60,10 +69,15 @@ class Post
       @category
     elsif @category == "health"
       @category
+    elsif @category ==  "funny"
     else
       puts "Category should be one of 'Love', 'Money', 'Work', 'Animals', 'Kids', or 'Health.'"
       category()
     end
+  end
+
+  def actualCategory(category)
+    @actualCategory = category
   end
 
   #Creates post, used in options function in Menu.rb

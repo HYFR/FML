@@ -1,13 +1,15 @@
 class Comment < Post
-  def initialize
+
+  def initialize(db)
+    @db = db
     commentTable()
   end
   
   def commentTable
-    exist = DB.table_exists?(:comments)
+    exist = @db.table_exists?(:comments)
     if exist == true
     else
-      DB.create_table :comments do
+      @db.create_table :comments do
         primary_key :commentNumber
         foreign_key :user_id, :user
         foreign_key :post_id, :forum
@@ -15,7 +17,7 @@ class Comment < Post
         String :content
       end
     end
-    @currentComment = DB[:comments]
+    @currentComment = @db[:comments]
   end
 
   #Used in adCommentOrSeeComment function in Menu.rb

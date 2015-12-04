@@ -1,9 +1,14 @@
+require_relative './User'
+require_relative './Post'
+require_relative './Comment'
+
 class Menu
 
-  def initialize
-    @user = User.new
-    @post = Post.new
-    @comment = Comment.new
+  def initialize(db)
+    @db = db
+    @user = User.new(@db)
+    @post = Post.new(@db)
+    @comment = Comment.new(@db)
   end
                    
   def username
@@ -19,12 +24,14 @@ class Menu
   def logIN()
     #tracks number of attempts to log in
     logINattempt = 0
-    puts "\n\tYou will be temporary kicked off if your password or username is incorrect three times.\n "
+    puts "\n\tYou will be temporary kicked off if your password or username is incorrect three times. If by any chance you are here by mistake, type exit as your username and password, and you will be returned towards the forum menu.\n "
     while logINattempt < 3 do
       if @user.accountID(username, password)
         puts "\nGlad to have you return, #{@username}. "
         logINattempt = 3
         return true
+      elsif @username == "exit" && @password == "exit"
+        intro()
       else
         puts "Username or password is wrong."
         logINattempt += 1
@@ -97,7 +104,7 @@ class Menu
       @post.showPost()
       addCommentOrSeeComment()
     elsif keyword == "log out"
-      puts "Logging out, #{@username}."
+      puts "Logging out, #{@username}.\n"
       intro()
     else
       puts "\nType in one of the keywords: 'create post', 'show post', 'delete user', 'delete post', or 'log out\n'"

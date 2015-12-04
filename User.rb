@@ -1,20 +1,24 @@
 class User
-  def initialize
+
+  def initialize(db)
+    @db = db
     verifyDB()
   end
   
   #Checks to see if a 'user' table exists in the FML database
   def verifyDB
-    exist = DB.table_exists?(:user)
+    exist = @db.table_exists?(:user)
     if exist == true
-    else #Create a user table in the database
-      DB.create_table :user do
+    else
+      #Create a user table in the database
+      @db.create_table :user do
         primary_key :user_id
         String :name
         String :password
       end
     end
-    @userDataset = DB[:user] # Creates a class variable dataset of the 'user' table.
+    # Creates a class variable dataset of the 'user' table.
+    @userDataset = @db[:user]
   end
 
   #Used in the options function in Menu.rb
@@ -27,12 +31,11 @@ class User
     @userDataset.insert(:name => username, :password => password)
   end
 
-  #An important function for delAccount() to work. 
+  #required in delAccount(username, password) 
   def delete(username, password)
     @userDataset.where(:name => username).where(:password => password).delete()
   end
   
-  #We see the use of username and password come into use here. The values identify which account is deleted.
   def delAccount(username, password)
     delete(username, password)
     puts "Your account, '#{username}', was successfully deleted"
