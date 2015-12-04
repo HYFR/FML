@@ -47,15 +47,15 @@ class Menu
    #Menu to log in or create account
   def intro()
     puts "\tWelcome to the forumn. Would you like to log in or create an account? Keywords are 'log in' or 'create' or 'exit'.\n"
-    @answer = gets.chomp.downcase
-    if @answer == "log in"
+    answer = gets.chomp.downcase
+    if answer == "log in"
       if logIN()
         options()
       end
-    elsif @answer == "create"
+    elsif answer == "create"
       createUser()
       options()
-    elsif @answer == "exit"
+    elsif answer == "exit"
       puts "Later"
       exit
     else
@@ -66,7 +66,7 @@ class Menu
 
   #Menu for most of the features
   def options()
-    puts "\n\tWelcome to the DL forum. Here you can create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create post', 'delete user', 'delete post', 'show post', 'log out', or 'comment.' Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n"
+    puts "\n\tWelcome to the DL forum. Here you can create posts, and delete your account or posts. There are a few keywords you will have to keep in mind though: 'create post', 'delete user', 'delete post', 'show post', 'log out', or 'comment.' Keep in mind that if you submit a word that is not a keyword you will be met with an error, asking for one of the keywords. Enjoy and have fun.\n\n"
     keyword = gets.chomp.downcase
     if keyword == "create post"
       @post.createPost(@user.accountID(@username, @password))

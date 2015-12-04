@@ -29,7 +29,7 @@ class Comment < Post
     @currentComment.where(:user_id => id).delete()
   end
 
-  def showComment()
-    @currentComment.to_hash(:commentNumber, :content)
+  def showComment(id)
+    @currentComment.where(:post_id => id).to_hash(:commentNumber, :content)
   end
 end

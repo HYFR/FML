@@ -21,7 +21,6 @@ class Post
     @currentPost = @db[:forum] # create a instance variable of the dataset 'forum'
   end
 
-  #An important function in createPost, and is the separate database interaction.
   def insertContent(id)
     @currentPost.insert(:user_id => id, :title => @title, :content => @content, :category => @category)
   end
@@ -105,8 +104,9 @@ class Post
     puts "#{@currentPost.where(:user_id => id).to_hash(:title, :content)}"
     puts "Your account's posts have been displayed. Type the Title of the post you want to delete."
     @title = gets.chomp
+    @comment.delUsrComment(id)
     delTitle()
-    puts "\nThe post, titled  '#{@title}' has been deleted.\n "
+    puts "\nThe post titled  '#{@title}' has been deleted.\n "
   end
 
   #Required to show the posts in showPost() function.
@@ -118,33 +118,37 @@ class Post
   def categoryPost(category)
     @currentPost.where(:category => category).to_hash(:title, :content)
   end
+
+  def showPostStatement(category)
+    puts "\nThese are all the posts cateogirzed as '#{category}'\n"
+  end
   
   def showPost(id)
-    puts "What category of posts would you like to see? Love, Money, Work, Misc., Health, or All?\n"
+    puts "\nWhat category of posts would you like to see? Love, Money, Work, Misc., Health, or All?\n"
     @category = gets.chomp.downcase
     if @category ==  "all"
       posts = post()
-      puts "These are all the posts, regardless of category."
+      showPostStatement(@category)
       puts "#{posts}"
     elsif @category == "love"
       love = categoryPost(@category)
-      puts "\nThese are all the posts categorized as 'love'\n"
+      showPostStatement(@category)
       puts "#{love}"
     elsif @category == "money"
       money = categoryPost(@category)
-      puts "\nThese are all the posts categorized as 'money'\n"
+      showPostStatement(@category)
       puts "#{money}"
     elsif @category == "work"
       work = categoryPost(@category)
-      puts "\nThese are all the posts categorized as 'work'\n"
+      showPostStatement(@category)
       puts "#{work}"
     elsif @category == "misc"
       misc = categoryPost(@category)
-      puts "\nThese are all the posts categorized as 'misc'\n"
+      showPostStatement(@category)
       puts "#{misc}"
     elsif @category == "health"
       health = categoryPost(@category)
-      puts "\nThese are all the posts categorized as 'health'\n"
+      showPostStatement(@category)
       puts "#{health}"
     else
       puts "Type one of the categories: Love, Money, Work, Misc., Health, or All"
@@ -154,19 +158,28 @@ class Post
   end
 
   def addCommentOrSeeComment(id)
-    puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'"
+    puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'\n"
     @content = gets.chomp.downcase
     if @content == "comment"
       titleComment()
       @comment.insertComment(postID(@commentTitle), id , @commentTitle, comment)
     elsif @content == "see"
-      @comment.showComment()
+      choosePost()
+      displayComment = @comment.showComment(postID(@choice))
+      puts "#{displayComment}"
     else
-      puts "Type either 'comment' or 'see.'"
+      
+      puts "Type either 'comment' or 'see comments.'"
       addCommentOrSeeComment(id)
     end
   end
 
+  def choosePost
+    puts "What post would you like to see? Type the title"
+    @choice = gets.chomp
+  end
+
+  
   def titleComment()
     puts "What post would you like to comment on? Type the title."
     @commentTitle = gets.chomp
