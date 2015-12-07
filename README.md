@@ -16,6 +16,6 @@ on the command line. This will initiate the program. Once the program starts a m
 ## Testing
 Type
 ```
-ruby unitTests.rb
+ruby UserTest.rb
 ```
 on the command line to initiate the unit tests.
