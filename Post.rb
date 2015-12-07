@@ -136,8 +136,9 @@ class Post
       menu.choice("funny") { @category = "funny" }
     end
     splitArray(output(@category))
+    addCommentOrSeeComment(id)
   end
-
+  
   def addCommentOrSeeComment(id)
     puts "\nWould you like to comment on a post or see the comments? Type 'comment' or 'see'\n"
     @content = gets.chomp.downcase

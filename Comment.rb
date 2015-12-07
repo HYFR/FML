@@ -30,6 +30,6 @@ class Comment
   end
 
   def showComment(id)
-    @currentComment.where(:post_id => id).to_hash(:commentNumber, :content)
+    comment = @currentComment.where(:post_id => id).to_hash(:commentNumber, :content)
   end
 end
