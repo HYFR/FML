@@ -1,4 +1,4 @@
-class Comment < Post
+class Comment
 
   def initialize(db)
     @db = db

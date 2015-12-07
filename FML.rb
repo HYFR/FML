@@ -5,4 +5,4 @@ require_relative './Menu.rb'
 @db = Sequel.sqlite('TheFML.db')
 
 program = Menu.new(@db)
-program.intro()
+program.newIntro()

@@ -1,5 +1,6 @@
-class Post
+#include  array.c
 
+class Post
   def initialize(db)
     @db = db
     checkPostTable()
@@ -18,7 +19,8 @@ class Post
         String :category
       end
     end
-    @currentPost = @db[:forum] # create a instance variable of the dataset 'forum'
+    #create a instance variable of the dataset 'forum'
+    @currentPost = @db[:forum]
   end
 
   def insertContent(id)
@@ -55,24 +57,14 @@ class Post
     @postTitle = @currentPost.where(:title => title)
   end
 
-  #Holds category for post attribute, used in createPost function
-  def category
-    puts "In what category would you like your post to be? Love, Money, Work, Health, Misc."
-    @category = gets.chomp.downcase
-    if @category == "love"
-      @category
-    elsif @category == "money"
-      @category
-    elsif @category == "work"
-      @category
-    elsif @category == "misc"
-      @category
-    elsif @category == "health"
-      @category
-    elsif @category ==  "funny"
-    else
-      puts "Category should be one of 'Love', 'Money', 'Work', 'Animals', 'Kids', or 'Health.'"
-      category()
+  def newCategory
+    choose do |menu| 
+      menu.prompt = "In what category would you like your post to be in?"
+      menu.choice("love") { @category = "love" }
+      menu.choice("money") { @category = "money" }
+      menu.choice("work") { @category = "work" }
+      menu.choice("health") { @category = "health" }
+      menu.choice("funny") { @category = "funny" }
     end
   end
 
@@ -85,7 +77,7 @@ class Post
     #Fill the forumn table with a title and content
     title()
     content()
-    category()
+    newCategory()
     insertContent(id)
     puts "\nYour post, titled '#{@title}' was successfully created.\n "
   end
@@ -120,7 +112,29 @@ class Post
   end
 
   def showPostStatement(category)
-    puts "\nThese are all the posts cateogirzed as '#{category}'\n"
+    puts "\nThese are all the posts categorized as '#{category}'\n"
+  end
+
+  def output(category)
+    @inputArray =  "#{@currentPost.to_hash(:title, :content)}"
+  end
+
+  def splitArray(input)
+    stuff = input.split('=>').sort_by(&:length).pop
+    print "Title: #{stuff}"
+  end
+      
+  def newShowPost(id)
+    choose do |menu|
+      menu.prompt = "\nWhat category of posts would you like to see?\n"
+      menu.choice("all") { @category = "all" }
+      menu.choice("love") { @category = "love" }
+      menu.choice("money") { @category = "money" }
+      menu.choice("work") { @category = "work"}
+      menu.choice("health") { @cateogry = "health" }
+      menu.choice("funny") { @category = "funny" }
+    end
+    splitArray(output(@category))
   end
   
   def showPost(id)
@@ -179,7 +193,6 @@ class Post
     @choice = gets.chomp
   end
 
-  
   def titleComment()
     puts "What post would you like to comment on? Type the title."
     @commentTitle = gets.chomp
