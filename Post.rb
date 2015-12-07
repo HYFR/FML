@@ -1,5 +1,3 @@
-#include  array.c
-
 class Post
   def initialize(db)
     @db = db
@@ -120,8 +118,11 @@ class Post
   end
 
   def splitArray(input)
-    stuff = input.split('=>').sort_by(&:length).pop
-    print "Title: #{stuff}"
+    n = 1
+    title = input.split("=>").first
+    content = input.split("=>").pop
+    print "Title: #{title}\n "
+    print "Content: #{content}\n "
   end
       
   def newShowPost(id)
@@ -135,40 +136,6 @@ class Post
       menu.choice("funny") { @category = "funny" }
     end
     splitArray(output(@category))
-  end
-  
-  def showPost(id)
-    puts "\nWhat category of posts would you like to see? Love, Money, Work, Misc., Health, or All?\n"
-    @category = gets.chomp.downcase
-    if @category ==  "all"
-      posts = post()
-      showPostStatement(@category)
-      puts "#{posts}"
-    elsif @category == "love"
-      love = categoryPost(@category)
-      showPostStatement(@category)
-      puts "#{love}"
-    elsif @category == "money"
-      money = categoryPost(@category)
-      showPostStatement(@category)
-      puts "#{money}"
-    elsif @category == "work"
-      work = categoryPost(@category)
-      showPostStatement(@category)
-      puts "#{work}"
-    elsif @category == "misc"
-      misc = categoryPost(@category)
-      showPostStatement(@category)
-      puts "#{misc}"
-    elsif @category == "health"
-      health = categoryPost(@category)
-      showPostStatement(@category)
-      puts "#{health}"
-    else
-      puts "Type one of the categories: Love, Money, Work, Misc., Health, or All"
-      showPost()
-    end
-    addCommentOrSeeComment(id)
   end
 
   def addCommentOrSeeComment(id)
